@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.weather_forcast.Features.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_citiesFragment"
+            app:destination="@id/citiesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/citiesFragment"
+        android:name="com.example.weather_forcast.Features.CitiesFragment"
+        android:label="fragment_cities"
+        tools:layout="@layout/fragment_cities" >
+        <action
+            android:id="@+id/action_citiesFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_citiesFragment_to_addCityFragment"
+            app:destination="@id/addCityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCityFragment"
+        android:name="com.example.weather_forcast.Features.AddCityFragment"
+        android:label="fragment_add_city"
+        tools:layout="@layout/fragment_add_city" >
+        <action
+            android:id="@+id/action_addCityFragment_to_citiesFragment"
+            app:destination="@id/citiesFragment" />
+    </fragment>
+</navigation>
