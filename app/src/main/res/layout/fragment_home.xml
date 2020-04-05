@@ -64,6 +64,7 @@
             android:layout_marginTop="-32dp"
             android:gravity="center_horizontal"
             android:text="24"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="68sp" />
 
@@ -73,6 +74,7 @@
             android:layout_height="wrap_content"
             android:maxLength="20"
             android:text="Douala"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="32sp" />
 
@@ -84,6 +86,7 @@
             android:layout_marginBottom="4dp"
             android:padding="10dp"
             android:text="Sunny"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

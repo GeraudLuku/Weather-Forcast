@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.WeatherViewModel
@@ -37,10 +38,15 @@ class HomeFragment : Fragment() {
 
             if (currentWeather.current != null) {
                 Log.d("Successful", currentWeather.toString())
+
                 //update UI
                 location.text = currentWeather.location.name
                 weather_condition.text = currentWeather.current.weather_descriptions.get(0)
                 temperature.text = currentWeather.current.temperature.toString()
+                Glide.with(view)
+                    .load(currentWeather.current.weather_icons.get(0))
+                    .into(weather_condition_icon)
+
             } else
                 Log.d("Failed", "Result is null")
 
