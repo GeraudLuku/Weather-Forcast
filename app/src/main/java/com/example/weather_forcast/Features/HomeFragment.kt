@@ -34,22 +34,28 @@ class HomeFragment : Fragment() {
 
         //initialize view model class
         viewModel = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
+
+        //observe current weather
         viewModel.currentWeather.observe(viewLifecycleOwner, Observer { currentWeather ->
 
-            if (currentWeather.weather != null) {
-                Log.d("Successful", currentWeather.toString())
+            Log.d("Successful", currentWeather.toString())
 
-                //update UI
-                location.text = currentWeather.name
-                weather_condition.text = currentWeather.weather.get(0).description
-                temperature.text = currentWeather.main.temp.toInt().toString() //cast i to interger to remove the decimal point
-                Glide.with(view)
-                    .load("http://openweathermap.org/img/w/" + currentWeather.weather.get(0).icon + ".png")
-                    .into(weather_condition_icon)
+            //update UI
+            location.text = currentWeather.name
+            weather_condition.text = currentWeather.weather.get(0).description
+            temperature.text = currentWeather.main.temp.toInt()
+                .toString() //cast i to interger to remove the decimal point
+            Glide.with(view)
+                .load("http://openweathermap.org/img/w/" + currentWeather.weather.get(0).icon + ".png")
+                .into(weather_condition_icon)
 
-            } else
-                Log.d("Failed", "Result is null")
+        })
 
+        //observe forecast weather
+        viewModel.forecastWeather.observe(viewLifecycleOwner, Observer { forecastWeather ->
+            Log.d("Success- Forecast", forecastWeather.toString())
+
+            //initilize recycler view
         })
 
         //set the town to get location

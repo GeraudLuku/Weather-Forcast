@@ -3,6 +3,7 @@ package com.example.weather_forcast.Api
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.weather_forcast.Model.CurrentWeath.CurrentWeather
+import com.example.weather_forcast.Model.ForecastWeath.ForecastWeather
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -28,7 +29,7 @@ object RetrofitRepository {
                         withContext(Main) {
                             //set value on the main thread
                             value = currentWeather
-                            Log.d("Method", currentWeather.toString())
+                            Log.d("Method -current weather", currentWeather.toString())
                             theJob.complete()
                         }
                     }
@@ -38,22 +39,22 @@ object RetrofitRepository {
     }
 
     //getting forecast weather functions
-    fun getWeatheerForecast(
+    fun getWeatherForecast(
         location: String
-    ): LiveData<CurrentWeather> {
-        Log.d("GetCurrentWeather", "getting weather")
-        job1 = Job()
-        return object : LiveData<CurrentWeather>() {
+    ): LiveData<ForecastWeather> {
+        Log.d("GetForecastWeather", "getting forecast weather")
+        job2 = Job()
+        return object : LiveData<ForecastWeather>() {
             override fun onActive() { //when this method is called do something
                 super.onActive()
                 job1?.let { theJob ->
-                    CoroutineScope(IO + theJob).launch {//get current weather on the background thread
-                        val currentWeather: CurrentWeather =
-                            RetrofitBuilder.apiService.getCurrentWeather(location)
+                    CoroutineScope(IO + theJob).launch {//get forecast weather on the background thread
+                        val forecastWeather: ForecastWeather =
+                            RetrofitBuilder.apiService.getWeatherForecast(location)
                         withContext(Main) {
                             //set value on the main thread
-                            value = currentWeather
-                            Log.d("Method", currentWeather.toString())
+                            value = forecastWeather
+                            Log.d("Method-Forecast Weather", forecastWeather.toString())
                             theJob.complete()
                         }
                     }
@@ -63,6 +64,7 @@ object RetrofitRepository {
     }
 
     fun cancelJobs() {
-        job1?.cancel();
+        job1?.cancel()
+        job2?.cancel()
     }
 }
