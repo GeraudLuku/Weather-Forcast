@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
 
-    lateinit var viewModel: WeatherViewModel
+    private lateinit var viewModel: WeatherViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,15 +36,15 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
         viewModel.currentWeather.observe(viewLifecycleOwner, Observer { currentWeather ->
 
-            if (currentWeather.current != null) {
+            if (currentWeather.weather != null) {
                 Log.d("Successful", currentWeather.toString())
 
                 //update UI
-                location.text = currentWeather.location.name
-                weather_condition.text = currentWeather.current.weather_descriptions.get(0)
-                temperature.text = currentWeather.current.temperature.toString()
+                location.text = currentWeather.name
+                weather_condition.text = currentWeather.weather.get(0).description
+                temperature.text = currentWeather.main.temp.toInt().toString() //cast i to interger to remove the decimal point
                 Glide.with(view)
-                    .load(currentWeather.current.weather_icons.get(0))
+                    .load("http://openweathermap.org/img/w/" + currentWeather.weather.get(0).icon + ".png")
                     .into(weather_condition_icon)
 
             } else

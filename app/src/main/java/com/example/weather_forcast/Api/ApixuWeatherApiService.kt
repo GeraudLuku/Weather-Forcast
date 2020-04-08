@@ -1,18 +1,23 @@
 package com.example.weather_forcast
 
 
-import com.example.weather_forcast.Model.CurrentWeather
+import com.example.weather_forcast.Model.CurrentWeath.CurrentWeather
+import com.example.weather_forcast.Model.ForecastWeath.ForecastWeather
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-//http://api.weatherstack.com/current?access_key=0d586fdd5b3778499c9addb95638bd85&query=New York& language = en
-
+//api key for open weather c29a17192b18dc3bea8eeb505999ae9e
+// api.openweathermap.org/data/2.5/weather?q=london&appid=c29a17192b18dc3bea8eeb505999ae9e
 interface ApixuWeatherApiService {
 
-    @GET("current?access_key=0d586fdd5b3778499c9addb95638bd85")
+    @GET("weather?appid=c29a17192b18dc3bea8eeb505999ae9e&units=metric")
     suspend fun getCurrentWeather(
-        @Query("query") location: String
+        @Query("q") location: String
     ): CurrentWeather
 
+    @GET("forecast?&appid=c29a17192b18dc3bea8eeb505999ae9e&units=metric")
+    suspend fun getWeatherForecast(
+        @Query("q") location: String
+    ): ForecastWeather
 
 }

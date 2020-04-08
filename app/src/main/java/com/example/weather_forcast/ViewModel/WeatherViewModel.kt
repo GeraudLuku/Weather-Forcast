@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.weather_forcast.Api.RetrofitRepository
-import com.example.weather_forcast.Model.CurrentWeather
+import com.example.weather_forcast.Model.CurrentWeath.CurrentWeather
 
 class WeatherViewModel : ViewModel() {
 
