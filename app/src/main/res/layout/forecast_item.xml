@@ -27,8 +27,8 @@
 
             <ImageView
                 android:id="@+id/weather_condition_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_wb_cloudy" />
 
             <TextView
@@ -44,10 +44,19 @@
                 android:id="@+id/temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-12dp"
+                android:layout_marginTop="-9dp"
                 android:gravity="center_horizontal"
                 android:text="77"
                 android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23:00 PM"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="14sp" />
 
             <TextView
@@ -55,6 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Wed"
+                android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp" />
 
