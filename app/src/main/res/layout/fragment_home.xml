@@ -32,6 +32,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
+    <ProgressBar
+        android:id="@+id/weatherProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@+id/weather_container"
+        app:layout_constraintEnd_toEndOf="@+id/weather_container"
+        app:layout_constraintStart_toStartOf="@+id/weather_container"
+        app:layout_constraintTop_toTopOf="@+id/weather_container" />
+
     <LinearLayout
         android:id="@+id/weather_container"
         android:layout_width="wrap_content"
@@ -40,6 +52,7 @@
         android:layout_marginTop="28dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,9 +76,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-28dp"
             android:gravity="center_horizontal"
-            android:textAllCaps="true"
             android:text="24"
             android:textAlignment="center"
+            android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="68sp" />
 
@@ -118,11 +131,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weather_container" />
 
+    <ProgressBar
+        android:id="@+id/forecast_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:visibility="invisible"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"

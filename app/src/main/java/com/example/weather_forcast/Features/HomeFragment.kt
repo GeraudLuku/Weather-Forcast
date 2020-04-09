@@ -2,10 +2,12 @@ package com.example.weather_forcast.Features
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -13,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.weather_forcast.Adapter.ForecastRecyclerAdapter
-
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.WeatherViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -23,6 +24,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: WeatherViewModel
     private lateinit var navController: NavController
+
+    private lateinit var fadeInAnim: Animation
+    private lateinit var fadeOutAnim: Animation
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +44,10 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
         navController = findNavController()
 
+        //init animations
+        fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+
 
         //observe current weather
         viewModel.currentWeather.observe(viewLifecycleOwner, Observer { currentWeather ->
@@ -52,8 +60,12 @@ class HomeFragment : Fragment() {
             temperature.text = currentWeather.main.temp.toInt()
                 .toString() //cast i to interger to remove the decimal point
             Glide.with(view)
-                .load("http://openweathermap.org/img/w/" + currentWeather.weather.get(0).icon + ".png")
+                .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
                 .into(weather_condition_icon)
+
+            //show current weather view after everything has finished loading
+            weather_container.startAnimation(fadeInAnim)
+            weatherProgress.startAnimation(fadeOutAnim)
 
         })
 
@@ -67,6 +79,10 @@ class HomeFragment : Fragment() {
             recycler_view.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             recycler_view.setHasFixedSize(true)
+
+            //show recycler view after everything has finished loading
+            recycler_view.startAnimation(fadeInAnim)
+            forecast_progress.startAnimation(fadeOutAnim)
         })
 
         //set the town to get location
