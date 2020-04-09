@@ -60,6 +60,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
+    //date utils
+    implementation 'com.github.thunder413:DateTimeUtils:3.0'
+
 //    // Room
 //    implementation "androidx.room:room-runtime:$room_version"
 //    implementation "androidx.legacy:legacy-support-v4:1.0.0"

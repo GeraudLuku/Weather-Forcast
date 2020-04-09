@@ -8,8 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.weather_forcast.Adapter.ForecastRecyclerAdapter
 
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.WeatherViewModel
@@ -19,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 class HomeFragment : Fragment() {
 
     private lateinit var viewModel: WeatherViewModel
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,8 +36,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //initialize view model class
+        //initialize view model class and navigation controller
         viewModel = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
+        navController = findNavController()
+
 
         //observe current weather
         viewModel.currentWeather.observe(viewLifecycleOwner, Observer { currentWeather ->
@@ -42,7 +48,7 @@ class HomeFragment : Fragment() {
 
             //update UI
             location.text = currentWeather.name
-            weather_condition.text = currentWeather.weather.get(0).description
+            weather_condition.text = currentWeather.weather[0].description
             temperature.text = currentWeather.main.temp.toInt()
                 .toString() //cast i to interger to remove the decimal point
             Glide.with(view)
@@ -55,7 +61,12 @@ class HomeFragment : Fragment() {
         viewModel.forecastWeather.observe(viewLifecycleOwner, Observer { forecastWeather ->
             Log.d("Success- Forecast", forecastWeather.toString())
 
-            //initilize recycler view
+            //notify data set changed
+            //initialize recycler view
+            recycler_view.adapter = ForecastRecyclerAdapter(forecastWeather.list, view.context)
+            recycler_view.layoutManager =
+                LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+            recycler_view.setHasFixedSize(true)
         })
 
         //set the town to get location
@@ -64,7 +75,7 @@ class HomeFragment : Fragment() {
         //initialize view
         list_btn.setOnClickListener {
             //navigate to list of cities page
-            findNavController().navigate(R.id.action_homeFragment_to_citiesFragment)
+            navController?.navigate(R.id.action_homeFragment_to_citiesFragment)
         }
     }
 
