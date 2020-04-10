@@ -66,6 +66,7 @@ class HomeFragment : Fragment() {
             //show current weather view after everything has finished loading
             weather_container.startAnimation(fadeInAnim)
             weatherProgress.startAnimation(fadeOutAnim)
+            weatherProgress.visibility = View.INVISIBLE
 
         })
 
@@ -83,6 +84,7 @@ class HomeFragment : Fragment() {
             //show recycler view after everything has finished loading
             recycler_view.startAnimation(fadeInAnim)
             forecast_progress.startAnimation(fadeOutAnim)
+            forecast_progress.visibility = View.INVISIBLE
         })
 
         //set the town to get location
