@@ -63,10 +63,10 @@ dependencies {
     //date utils
     implementation 'com.github.thunder413:DateTimeUtils:3.0'
 
-//    // Room
-//    implementation "androidx.room:room-runtime:$room_version"
-//    implementation "androidx.legacy:legacy-support-v4:1.0.0"
-//    kapt "androidx.room:room-compiler:$room_version"
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    kapt "androidx.room:room-compiler:$room_version"
 
 //    // Kodein
 //    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
