@@ -3,6 +3,8 @@ package com.example.weather_forcast.Features
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,12 +23,22 @@ class CitiesFragment : Fragment() {
     private lateinit var viewModel: CitiesViewModel
     private lateinit var navController: NavController
 
+    private lateinit var fadeInAnim: Animation
+    private lateinit var fadeOutAnim: Animation
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_cities, container, false)
+
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         //set toolbar
         if (activity is AppCompatActivity) {
@@ -38,17 +50,13 @@ class CitiesFragment : Fragment() {
             Log.d("ActionBar", "Action Bar set")
         }
 
-
-
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         //initialize view model class and navigation controller
         viewModel = ViewModelProvider(activity!!).get(CitiesViewModel::class.java)
         navController = findNavController()
+
+        //init animations
+        fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
 
         //observe list of cities from database
         viewModel.getCities()?.observe(viewLifecycleOwner, Observer { cities ->
@@ -61,12 +69,18 @@ class CitiesFragment : Fragment() {
             recycler_view.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
             recycler_view.setHasFixedSize(true)
+
+            //show list of cities view after everything has finished loading
+            recycler_view.startAnimation(fadeInAnim)
+            progressBar.startAnimation(fadeOutAnim)
+            progressBar.visibility = View.INVISIBLE
         })
 
+
         //navigate to add city fragment
-        floatingActionButton.setOnClickListener {
+        addCity.setOnClickListener { view ->
             //navigate
-            findNavController().navigate(R.id.action_citiesFragment_to_addCityFragment)
+            navController.navigate(R.id.action_citiesFragment_to_addCityFragment)
         }
     }
 

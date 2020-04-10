@@ -45,8 +45,8 @@ class HomeFragment : Fragment() {
         navController = findNavController()
 
         //init animations
-        fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+        fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in)
+        fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out)
 
 
         //observe current weather
