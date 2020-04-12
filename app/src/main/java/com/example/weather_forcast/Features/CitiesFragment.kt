@@ -38,6 +38,7 @@ class CitiesFragment : Fragment() {
 
         //set toolbar
         if (activity is AppCompatActivity) {
+            setHasOptionsMenu(true)
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
             (activity as AppCompatActivity).supportActionBar?.setDisplayShowCustomEnabled(true)
@@ -81,5 +82,14 @@ class CitiesFragment : Fragment() {
             navController.navigate(R.id.action_citiesFragment_to_addCityFragment)
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.getItemId() == android.R.id.home) {
+            navController.popBackStack()
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 }
