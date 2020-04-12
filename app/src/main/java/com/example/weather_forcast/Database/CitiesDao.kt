@@ -1,12 +1,10 @@
 package com.example.weather_forcast.Database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.weather_forcast.Model.City
 
+@Dao
 interface CitiesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -30,11 +30,7 @@ class CitiesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_cities, container, false)
-
-
-        return view
+        return inflater.inflate(R.layout.fragment_cities, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,27 +51,29 @@ class CitiesFragment : Fragment() {
         navController = findNavController()
 
         //init animations
-        fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+        fadeInAnim = AnimationUtils.loadAnimation(view.context, R.anim.fade_in)
+        fadeOutAnim = AnimationUtils.loadAnimation(view.context, R.anim.fade_out)
 
         //observe list of cities from database
         viewModel.getCities()?.observe(viewLifecycleOwner, Observer { cities ->
 
-            Log.d("Success- Forecast", cities.toString())
+            Log.d("Success- Cities", cities.toString())
 
-            //notify data set changed
-            //initialize recycler view
-            recycler_view.adapter = CitiesRecyclerAdapter(view.context, cities)
-            recycler_view.layoutManager =
-                LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-            recycler_view.setHasFixedSize(true)
+            //check if list is not empty or null
+            if (!cities.isEmpty()) {
+                //notify data set changed
+                //initialize recycler view
+                recycler_view.adapter = CitiesRecyclerAdapter(view.context, cities)
+                recycler_view.layoutManager =
+                    LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+                recycler_view.setHasFixedSize(true)
 
-            //show list of cities view after everything has finished loading
-            recycler_view.startAnimation(fadeInAnim)
-            progressBar.startAnimation(fadeOutAnim)
-            progressBar.visibility = View.INVISIBLE
+                //show list of cities view after everything has finished loading
+                recycler_view.startAnimation(fadeInAnim)
+                progressBar.startAnimation(fadeOutAnim)
+                progressBar.visibility = View.INVISIBLE
+            }
         })
-
 
         //navigate to add city fragment
         addCity.setOnClickListener { view ->
