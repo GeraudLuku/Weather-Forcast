@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.example.weather_forcast.Model.City
 
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.CitiesViewModel
@@ -28,6 +29,8 @@ class AddCityFragment : Fragment() {
 
     private lateinit var viewModel: CitiesViewModel
     private lateinit var navController: NavController
+
+    private var place: Place? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +64,22 @@ class AddCityFragment : Fragment() {
             //open google places intent
             onSearchCalled()
         }
+
+        //set click listener on cancel button
+        imageButton.setOnClickListener {
+            //remove selected city value
+            editText.setText("")
+            place = null
+        }
+
+        //set on Click listener on ok button
+        imageButton2.setOnClickListener {
+            place?.let {place: Place ->
+                //if place is not null add it to database
+                viewModel.addCity(City(0, place.name.toString()))
+            }
+        }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -73,10 +92,10 @@ class AddCityFragment : Fragment() {
 
     private fun onSearchCalled() {
         // Set the fields to specify which types of place data to return.
-        var fields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG)
+        val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
 
         //start the autocomplete intent
-        var intent = context?.let {
+        val intent = context?.let {
             Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN,
                 fields
@@ -90,19 +109,18 @@ class AddCityFragment : Fragment() {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 //get selected place
-                var place = data?.let { Autocomplete.getPlaceFromIntent(it) }
-                if (place != null) {
-                    Log.d("Google Place API", place.name)
-                    //set tet on edit text
-                    editText.setText(place.name)
-                }
+                place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                Log.d("Google Place API", place?.name)
+                //set tet on edit text
+                editText.setText(place?.name)
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                var status = data?.let { Autocomplete.getStatusFromIntent(it) }
+
+                val status = data?.let { Autocomplete.getStatusFromIntent(it) }
                 Log.i("Google Place APi", status?.statusMessage)
+
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
-                Log.d("Google Place","Operation canceled")
+                Log.d("Google Place", "Operation canceled")
             }
         }
     }
