@@ -13,14 +13,18 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_forcast.Adapter.CitiesRecyclerAdapter
+import com.example.weather_forcast.Model.City
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.CitiesViewModel
+import com.example.weather_forcast.ViewModel.WeatherViewModel
 import kotlinx.android.synthetic.main.fragment_cities.*
 
 
-class CitiesFragment : Fragment() {
+class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
 
-    private lateinit var viewModel: CitiesViewModel
+    private lateinit var viewModelCities: CitiesViewModel
+    private lateinit var viewModelWeather: WeatherViewModel
+
     private lateinit var navController: NavController
 
     private lateinit var fadeInAnim: Animation
@@ -41,14 +45,14 @@ class CitiesFragment : Fragment() {
             setHasOptionsMenu(true)
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            (activity as AppCompatActivity).supportActionBar?.setDisplayShowCustomEnabled(true)
             (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
 
             Log.d("ActionBar", "Action Bar set")
         }
 
         //initialize view model class and navigation controller
-        viewModel = ViewModelProvider(activity!!).get(CitiesViewModel::class.java)
+        viewModelCities = ViewModelProvider(activity!!).get(CitiesViewModel::class.java)
+        viewModelWeather = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
         navController = findNavController()
 
         //init animations
@@ -56,7 +60,7 @@ class CitiesFragment : Fragment() {
         fadeOutAnim = AnimationUtils.loadAnimation(view.context, R.anim.fade_out)
 
         //observe list of cities from database
-        viewModel.getCities()?.observe(viewLifecycleOwner, Observer { cities ->
+        viewModelCities.getCities()?.observe(viewLifecycleOwner, Observer { cities ->
 
             Log.d("Success- Cities", cities.toString())
 
@@ -64,7 +68,7 @@ class CitiesFragment : Fragment() {
             if (!cities.isEmpty()) {
                 //notify data set changed
                 //initialize recycler view
-                recycler_view.adapter = CitiesRecyclerAdapter(view.context, cities)
+                recycler_view.adapter = CitiesRecyclerAdapter(cities, this)
                 recycler_view.layoutManager =
                     LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
                 recycler_view.setHasFixedSize(true)
@@ -89,6 +93,12 @@ class CitiesFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    override fun onItemCLicked(city: City) {
+        //change current city weather
+        viewModelWeather.setLocation(city.name)
+        Log.d("Cities-Frag","item clicked")
     }
 
 

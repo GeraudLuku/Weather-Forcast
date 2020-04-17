@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_forcast.Model.City
 import com.example.weather_forcast.R
 
-class CitiesRecyclerAdapter(private val context: Context, private val cities: List<City>) :
+class CitiesRecyclerAdapter(
+    private val cities: List<City>,
+    private var clickListener: onItemClickedListener
+) :
     RecyclerView.Adapter<CitiesRecyclerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -24,12 +27,9 @@ class CitiesRecyclerAdapter(private val context: Context, private val cities: Li
 
     override fun onBindViewHolder(holder: CitiesRecyclerAdapter.ViewHolder, position: Int) {
         val city = cities[position]
+        //set click listener
+        holder.initialize(city, clickListener)
 
-        //set city name
-        holder.city_name.text = city.name
-
-        //set city country icon
-        holder.map_icon.setImageResource(R.drawable.cameroon)
     }
 
     override fun getItemCount(): Int {
@@ -39,9 +39,23 @@ class CitiesRecyclerAdapter(private val context: Context, private val cities: Li
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val map_icon: ImageView = itemView.findViewById(R.id.image)
         val city_name: TextView = itemView.findViewById(R.id.name)
+
+        //init item click listener
+        fun initialize(city: City, action: onItemClickedListener) {
+            //initialize items
+            //set city name
+            city_name.text = city.name
+
+            //implement click function
+            itemView.setOnClickListener {
+                action.onItemCLicked(city)
+            }
+        }
 
     }
 
+    interface onItemClickedListener {
+        fun onItemCLicked(city: City)
+    }
 }

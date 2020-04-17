@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class City(
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") var id: Int,
+    var id: Int,
 
     @ColumnInfo(name = "city") var name: String
 

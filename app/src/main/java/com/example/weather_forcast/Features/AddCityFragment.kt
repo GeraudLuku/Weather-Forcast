@@ -74,10 +74,17 @@ class AddCityFragment : Fragment() {
 
         //set on Click listener on ok button
         imageButton2.setOnClickListener {
-            place?.let {place: Place ->
-                //if place is not null add it to database
-                viewModel.addCity(City(0, place.name.toString()))
-            }
+//            place?.let {place: Place ->
+//                //if place is not null add it to database
+//                viewModel.addCity(City(0, place.name.toString()))
+//                //navigate to cities list fragment
+//                navController.navigate(R.id.action_addCityFragment_to_citiesFragment)
+//            }
+
+            //create dummy entry in database to emulate
+            viewModel.addCity(City(0,"sweden"))
+            //navigate to cities list fragment
+            navController.navigate(R.id.action_addCityFragment_to_citiesFragment)
         }
 
     }
