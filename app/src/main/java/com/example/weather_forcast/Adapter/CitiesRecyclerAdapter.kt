@@ -11,7 +11,7 @@ import com.example.weather_forcast.Model.City
 import com.example.weather_forcast.R
 
 class CitiesRecyclerAdapter(
-    private val cities: List<City>,
+    private val cities: ArrayList<City>,
     private var clickListener: onItemClickedListener
 ) :
     RecyclerView.Adapter<CitiesRecyclerAdapter.ViewHolder>() {
@@ -35,6 +35,8 @@ class CitiesRecyclerAdapter(
     override fun getItemCount(): Int {
         return cities.size
     }
+
+    fun getCity(position: Int) = cities[position]
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

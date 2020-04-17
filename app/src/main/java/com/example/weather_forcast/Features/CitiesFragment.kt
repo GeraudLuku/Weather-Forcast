@@ -11,7 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_forcast.Adapter.CitiesRecyclerAdapter
 import com.example.weather_forcast.Model.City
 import com.example.weather_forcast.R
@@ -26,6 +28,8 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
     private lateinit var viewModelWeather: WeatherViewModel
 
     private lateinit var navController: NavController
+
+    private var citiesList: ArrayList<City> = ArrayList()
 
     private lateinit var fadeInAnim: Animation
     private lateinit var fadeOutAnim: Animation
@@ -55,6 +59,7 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
         viewModelWeather = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
         navController = findNavController()
 
+
         //init animations
         fadeInAnim = AnimationUtils.loadAnimation(view.context, R.anim.fade_in)
         fadeOutAnim = AnimationUtils.loadAnimation(view.context, R.anim.fade_out)
@@ -67,11 +72,13 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
             //check if list is not empty or null
             if (!cities.isEmpty()) {
                 //notify data set changed
-                //initialize recycler view
-                recycler_view.adapter = CitiesRecyclerAdapter(cities, this)
+                //initialize recycler view and its adapters
+                val adapter = CitiesRecyclerAdapter(cities as ArrayList<City>, this)
+                recycler_view.adapter = adapter
                 recycler_view.layoutManager =
                     LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
                 recycler_view.setHasFixedSize(true)
+
 
                 //show list of cities view after everything has finished loading
                 recycler_view.startAnimation(fadeInAnim)
@@ -98,7 +105,8 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
     override fun onItemCLicked(city: City) {
         //change current city weather
         viewModelWeather.setLocation(city.name)
-        Log.d("Cities-Frag","item clicked")
+        Log.d("Cities-Frag", "item clicked")
+        navController.navigate(R.id.action_citiesFragment_to_homeFragment)
     }
 
 

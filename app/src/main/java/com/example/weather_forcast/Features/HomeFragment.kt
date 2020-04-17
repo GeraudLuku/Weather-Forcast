@@ -93,7 +93,7 @@ class HomeFragment : Fragment() {
         })
 
         //set the town to get location
-        viewModel.setLocation("london")
+//        viewModel.setLocation("london")
 
         //initialize view
         list_btn.setOnClickListener {
