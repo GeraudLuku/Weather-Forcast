@@ -33,6 +33,16 @@ class WeatherViewModel : ViewModel() {
         _location.value = updatedLocation
     }
 
+    //get current weather lat lng
+    fun getCurrentWeather(latitude: Double, longitude: Double): LiveData<CurrentWeather> {
+        return RetrofitRepository.getCurrentWeather(latitude, longitude)
+    }
+
+    //get forecast weather lat lng
+    fun getForecastWeather(latitude: Double, longitude: Double): LiveData<ForecastWeather> {
+        return RetrofitRepository.getWeatherForecast(latitude, longitude)
+    }
+
     fun cancelJobs() {
         RetrofitRepository.cancelJobs()
     }
