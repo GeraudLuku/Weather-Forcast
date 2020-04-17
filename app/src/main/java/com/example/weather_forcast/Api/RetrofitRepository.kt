@@ -38,6 +38,31 @@ object RetrofitRepository {
         }
     }
 
+    fun getCurrentWeather(
+        latitude: Double,
+        longitude: Double
+    ): LiveData<CurrentWeather> {
+        Log.d("GetCurrentWeather 2", "getting weather")
+        job1 = Job()
+        return object : LiveData<CurrentWeather>() {
+            override fun onActive() { //when this method is called do something
+                super.onActive()
+                job1?.let { theJob ->
+                    CoroutineScope(IO + theJob).launch {//get current weather on the background thread
+                        val currentWeather: CurrentWeather =
+                            RetrofitBuilder.apiService.getCurrentWeather(latitude, longitude)
+                        withContext(Main) {
+                            //set value on the main thread
+                            value = currentWeather
+                            Log.d("Method-current weather2", currentWeather.toString())
+                            theJob.complete()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     //getting forecast weather functions
     fun getWeatherForecast(
         location: String
@@ -55,6 +80,31 @@ object RetrofitRepository {
                             //set value on the main thread
                             value = forecastWeather
                             Log.d("Method-Forecast Weather", forecastWeather.toString())
+                            theJob.complete()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getWeatherForecast(
+        latitude: Double,
+        longitude: Double
+    ): LiveData<ForecastWeather> {
+        Log.d("GetForecastWeather2", "getting forecast weather")
+        job2 = Job()
+        return object : LiveData<ForecastWeather>() {
+            override fun onActive() { //when this method is called do something
+                super.onActive()
+                job1?.let { theJob ->
+                    CoroutineScope(IO + theJob).launch {//get forecast weather on the background thread
+                        val forecastWeather: ForecastWeather =
+                            RetrofitBuilder.apiService.getWeatherForecast(latitude, longitude)
+                        withContext(Main) {
+                            //set value on the main thread
+                            value = forecastWeather
+                            Log.d("Method-ForecastWeather2", forecastWeather.toString())
                             theJob.complete()
                         }
                     }
