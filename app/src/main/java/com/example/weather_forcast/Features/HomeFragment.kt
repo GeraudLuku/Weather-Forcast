@@ -84,10 +84,8 @@ class HomeFragment : Fragment() {
                     .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
                     .into(weather_condition_icon)
 
-                //show current weather view after everything has finished loading
-                weather_container.startAnimation(fadeInAnim)
-                weatherProgress.startAnimation(fadeOutAnim)
-                weatherProgress.visibility = View.INVISIBLE
+                //notify loading is over
+                viewModel._isLoading.postValue(false)
             }
         })
 
@@ -106,10 +104,8 @@ class HomeFragment : Fragment() {
                         LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
                     recycler_view.setHasFixedSize(true)
 
-                    //show recycler view after everything has finished loading
-                    recycler_view.startAnimation(fadeInAnim)
-                    forecast_progress.startAnimation(fadeOutAnim)
-                    forecast_progress.visibility = View.INVISIBLE
+                    //notify loading is over
+                    viewModel._isLoading.postValue(false)
                 }
             })
 
@@ -129,10 +125,8 @@ class HomeFragment : Fragment() {
                     .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
                     .into(weather_condition_icon)
 
-                //show current weather view after everything has finished loading
-                weather_container.startAnimation(fadeInAnim)
-                weatherProgress.startAnimation(fadeOutAnim)
-                weatherProgress.visibility = View.INVISIBLE
+                //notify loading is over
+                viewModel._isLoading.postValue(false)
             }
 
         })
@@ -149,10 +143,37 @@ class HomeFragment : Fragment() {
                     LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
                 recycler_view.setHasFixedSize(true)
 
-                //show recycler view after everything has finished loading
-                recycler_view.startAnimation(fadeInAnim)
-                forecast_progress.startAnimation(fadeOutAnim)
-                forecast_progress.visibility = View.INVISIBLE
+                //notify loading is over
+                viewModel._isLoading.postValue(false)
+            }
+        })
+
+
+        //listen to loading state
+        viewModel._isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            isLoading?.let { isLoading ->
+                if (isLoading) {
+                    //if something is loading then hide views and show progress bar
+
+                    //hide recycler view when loading
+                    recycler_view.startAnimation(fadeOutAnim)
+                    forecast_progress.startAnimation(fadeInAnim)
+
+                    //hide current weather when loading
+                    weather_container.startAnimation(fadeOutAnim)
+                    weatherProgress.startAnimation(fadeInAnim)
+
+                } else {
+                    //if it has finished loading hide progress bars and show views
+
+                    //show recycler view after everything has finished loading
+                    recycler_view.startAnimation(fadeInAnim)
+                    forecast_progress.startAnimation(fadeOutAnim)
+
+                    //show current weather view after everything has finished loading
+                    weather_container.startAnimation(fadeInAnim)
+                    weatherProgress.startAnimation(fadeOutAnim)
+                }
             }
         })
 
