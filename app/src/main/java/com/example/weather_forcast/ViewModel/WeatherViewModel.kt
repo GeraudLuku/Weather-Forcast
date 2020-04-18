@@ -11,6 +11,9 @@ import com.example.weather_forcast.Model.UserLocation
 
 class WeatherViewModel : ViewModel() {
 
+    private val _isLoading: MutableLiveData<Boolean> =
+        MutableLiveData() //operation loading variable
+
     private val _location: MutableLiveData<String> = MutableLiveData() //location variable
 
     private val _current_user_location: MutableLiveData<UserLocation> =
@@ -53,6 +56,10 @@ class WeatherViewModel : ViewModel() {
         val updatedLocation = location
         if (_location.value == updatedLocation)
             return
+
+        //set is loading
+        _isLoading.value = true
+
         _location.value = updatedLocation
     }
 
@@ -61,6 +68,10 @@ class WeatherViewModel : ViewModel() {
         val updatedLocation = location
         if (_current_user_location.value == updatedLocation)
             return
+
+        //set is loading
+        _isLoading.value = true
+
         _current_user_location.value = updatedLocation
     }
 
