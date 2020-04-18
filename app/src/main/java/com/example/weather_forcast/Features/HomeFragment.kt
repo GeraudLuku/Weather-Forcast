@@ -75,6 +75,48 @@ class HomeFragment : Fragment() {
         fadeInAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in)
         fadeOutAnim = AnimationUtils.loadAnimation(context, R.anim.fade_out)
 
+        //observe current location current weather
+        viewModel.currentUserWeather.observe(viewLifecycleOwner, Observer { currentWeather ->
+            Log.d("Successful", currentWeather.toString())
+
+            if (currentWeather != null) {
+                //update UI
+                location.text = currentWeather.name
+                weather_condition.text = currentWeather.weather[0].description
+                temperature.text = currentWeather.main.temp.toInt()
+                    .toString() //cast i to interger to remove the decimal point
+                Glide.with(view)
+                    .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
+                    .into(weather_condition_icon)
+
+                //show current weather view after everything has finished loading
+                weather_container.startAnimation(fadeInAnim)
+                weatherProgress.startAnimation(fadeOutAnim)
+                weatherProgress.visibility = View.INVISIBLE
+            }
+        })
+
+        //observe current location forecast weather
+        viewModel.currentUserForecastWeather.observe(
+            viewLifecycleOwner,
+            Observer { forecastWeather ->
+                Log.d("Success- Forecast", forecastWeather.toString())
+
+                if (forecastWeather != null) {
+                    //notify data set changed
+                    //initialize recycler view
+                    recycler_view.adapter =
+                        ForecastRecyclerAdapter(forecastWeather.list, view.context)
+                    recycler_view.layoutManager =
+                        LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+                    recycler_view.setHasFixedSize(true)
+
+                    //show recycler view after everything has finished loading
+                    recycler_view.startAnimation(fadeInAnim)
+                    forecast_progress.startAnimation(fadeOutAnim)
+                    forecast_progress.visibility = View.INVISIBLE
+                }
+            })
 
         //observe current weather
         viewModel.currentWeather.observe(viewLifecycleOwner, Observer { currentWeather ->
