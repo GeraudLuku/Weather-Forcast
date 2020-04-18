@@ -143,6 +143,7 @@ class HomeFragment : Fragment() {
                 //prompt user to turn on location of device
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
+                requestNewLocationData()
             }
         } else {
             requestPermissions()

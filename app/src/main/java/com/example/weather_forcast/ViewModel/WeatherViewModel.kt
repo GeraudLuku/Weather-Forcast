@@ -7,10 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.example.weather_forcast.Api.RetrofitRepository
 import com.example.weather_forcast.Model.CurrentWeath.CurrentWeather
 import com.example.weather_forcast.Model.ForecastWeath.ForecastWeather
+import com.example.weather_forcast.Model.UserLocation
 
 class WeatherViewModel : ViewModel() {
 
     private val _location: MutableLiveData<String> = MutableLiveData() //location variable
+
+    private val _current_user_location: MutableLiveData<UserLocation> =
+        MutableLiveData() //current user location variable
 
     //getting the current weather each time the _location value changes
     var currentWeather: LiveData<CurrentWeather> = Transformations
@@ -25,6 +29,25 @@ class WeatherViewModel : ViewModel() {
         }
 
 
+    //getting the current weather for user each time the _location value changes
+    var currentUserWeather: LiveData<CurrentWeather> = Transformations
+        .switchMap(_current_user_location) { _current_user_location ->
+            RetrofitRepository.getCurrentWeather(
+                _current_user_location.latitude,
+                _current_user_location.longitude
+            )
+        }
+
+    //getting the forecast weather for user any time the _location value changes
+    var currentUserForecastWeather: LiveData<ForecastWeather> = Transformations
+        .switchMap(_current_user_location) { _current_user_location ->
+            RetrofitRepository.getWeatherForecast(
+                _current_user_location.latitude,
+                _current_user_location.longitude
+            )
+        }
+
+
     //setting the location name
     fun setLocation(location: String) {
         val updatedLocation = location
@@ -33,15 +56,14 @@ class WeatherViewModel : ViewModel() {
         _location.value = updatedLocation
     }
 
-    //get current weather lat lng
-    fun getCurrentWeather(latitude: Double, longitude: Double): LiveData<CurrentWeather> {
-        return RetrofitRepository.getCurrentWeather(latitude, longitude)
+    //setting the current user location coordinates
+    fun setLocation(location: UserLocation) {
+        val updatedLocation = location
+        if (_current_user_location.value == updatedLocation)
+            return
+        _current_user_location.value = updatedLocation
     }
 
-    //get forecast weather lat lng
-    fun getForecastWeather(latitude: Double, longitude: Double): LiveData<ForecastWeather> {
-        return RetrofitRepository.getWeatherForecast(latitude, longitude)
-    }
 
     fun cancelJobs() {
         RetrofitRepository.cancelJobs()
