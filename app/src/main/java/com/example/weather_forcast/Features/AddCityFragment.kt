@@ -31,6 +31,7 @@ class AddCityFragment : Fragment() {
     private lateinit var navController: NavController
 
     private var place: Place? = null
+    private var placeName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,8 +56,6 @@ class AddCityFragment : Fragment() {
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
             (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
             (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
-
-            Log.d("ActionBar", "Action Bar set")
         }
 
         //set click listener on edittext
@@ -70,23 +69,18 @@ class AddCityFragment : Fragment() {
             //remove selected city value
             editText.setText("")
             place = null
+            placeName = ""
         }
 
         //set on Click listener on ok button
         imageButton2.setOnClickListener {
-//            place?.let {place: Place ->
-//                //if place is not null add it to database
-//                viewModel.addCity(City(0, place.name.toString()))
-//                //navigate to cities list fragment
-//                navController.navigate(R.id.action_addCityFragment_to_citiesFragment)
-//            }
+            if (!placeName.isBlank()) {
+                //if place is not null add it to database
+                viewModel.addCity(City(0, placeName))
+                //navigate to cities list fragment
+                navController.navigate(R.id.action_addCityFragment_to_citiesFragment)
+            }
 
-            //create dummy entry in database to emulate
-            viewModel.addCity(City(0,"buea"))
-            viewModel.addCity(City(0,"douala"))
-            viewModel.addCity(City(0,"boston"))
-            //navigate to cities list fragment
-            navController.navigate(R.id.action_addCityFragment_to_citiesFragment)
         }
 
     }
@@ -108,7 +102,7 @@ class AddCityFragment : Fragment() {
             Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN,
                 fields
-            ).setCountry(Locale.getDefault().toString())
+            ).setCountry("US")
                 .build(it)
         }
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
@@ -120,8 +114,12 @@ class AddCityFragment : Fragment() {
                 //get selected place
                 place = data?.let { Autocomplete.getPlaceFromIntent(it) }
                 Log.d("Google Place API", place?.name)
-                //set tet on edit text
+                //set text on edit text
                 editText.setText(place?.name)
+
+                //set place
+                placeName = place?.name.toString()
+
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
 
                 val status = data?.let { Autocomplete.getStatusFromIntent(it) }

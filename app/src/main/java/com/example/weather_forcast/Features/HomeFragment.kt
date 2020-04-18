@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
 
         //init fused location api
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Activity)
-        getLastLocation()
+        //getLastLocation()
 
         //init animations
         fadeInAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in)
@@ -90,9 +90,7 @@ class HomeFragment : Fragment() {
         })
 
         //observe current location forecast weather
-        viewModel.currentUserForecastWeather.observe(
-            viewLifecycleOwner,
-            Observer { forecastWeather ->
+        viewModel.currentUserForecastWeather.observe(viewLifecycleOwner, Observer { forecastWeather ->
                 Log.d("Success- Forecast", forecastWeather.toString())
 
                 if (forecastWeather != null) {
