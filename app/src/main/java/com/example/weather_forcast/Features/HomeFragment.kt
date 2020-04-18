@@ -27,6 +27,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.weather_forcast.Adapter.ForecastRecyclerAdapter
+import com.example.weather_forcast.Model.UserLocation
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.WeatherViewModel
 import com.google.android.gms.location.*
@@ -54,20 +55,25 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //init fused location api
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(view.context)
-        getLastLocation()
 
         //initialize view model class and navigation controller
         viewModel = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
         navController = findNavController()
 
+        //init fused location api
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Activity)
+        getLastLocation()
+
         //init animations
-        fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in)
-        fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out)
+        fadeInAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in)
+        fadeOutAnim = AnimationUtils.loadAnimation(context, R.anim.fade_out)
 
 
         //observe current weather
@@ -134,9 +140,11 @@ class HomeFragment : Fragment() {
                         requestNewLocationData()
                     } else {
                         //get latitude and longitude
-                        val lat = location.latitude
-                        val long = location.longitude
-                        Log.d("Known Location", long.toString())
+                        val userLocation = UserLocation(location.latitude, location.longitude)
+                        Log.d("Known Location", userLocation.toString())
+
+                        //make network request
+                        viewModel.setLocation(userLocation)
                     }
                 }
             } else {
@@ -169,7 +177,11 @@ class HomeFragment : Fragment() {
         override fun onLocationResult(locationResult: LocationResult) {
             val lastLocation: Location = locationResult.lastLocation
             // get location here
-            Log.d("Known Location", lastLocation.toString())
+            val userLocation = UserLocation(lastLocation.latitude, lastLocation.longitude)
+            Log.d("Known Location", userLocation.toString())
+
+            //make network request
+            viewModel.setLocation(userLocation)
         }
     }
 
