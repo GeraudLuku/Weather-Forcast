@@ -22,7 +22,7 @@ import com.example.weather_forcast.ViewModel.WeatherViewModel
 import kotlinx.android.synthetic.main.fragment_cities.*
 
 
-class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
+class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
 
     private lateinit var viewModelCities: CitiesViewModel
     private lateinit var viewModelWeather: WeatherViewModel
@@ -73,7 +73,8 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
             if (!cities.isEmpty()) {
                 //notify data set changed
                 //initialize recycler view and its adapters
-                val adapter = CitiesRecyclerAdapter(cities as ArrayList<City>, this)
+                citiesList = cities as ArrayList<City>
+                val adapter = CitiesRecyclerAdapter(citiesList, this)
                 recycler_view.adapter = adapter
                 recycler_view.layoutManager =
                     LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
@@ -107,6 +108,12 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.onItemClickedListener {
         viewModelWeather.setLocation(city.name)
         Log.d("Cities-Frag", "item clicked")
         navController.navigate(R.id.action_citiesFragment_to_homeFragment)
+    }
+
+    override fun onDeleteItem(city: City) {
+        //change current city weather
+        viewModelCities.deleteCity(city)
+        Log.d("Cities-Frag", "item deleted")
     }
 
 

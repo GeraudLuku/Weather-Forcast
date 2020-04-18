@@ -12,7 +12,7 @@ import com.example.weather_forcast.R
 
 class CitiesRecyclerAdapter(
     private val cities: ArrayList<City>,
-    private var clickListener: onItemClickedListener
+    private var clickListener: OnItemClickedListener
 ) :
     RecyclerView.Adapter<CitiesRecyclerAdapter.ViewHolder>() {
 
@@ -28,7 +28,7 @@ class CitiesRecyclerAdapter(
     override fun onBindViewHolder(holder: CitiesRecyclerAdapter.ViewHolder, position: Int) {
         val city = cities[position]
         //set click listener
-        holder.initialize(city, clickListener)
+        holder.initialize(city, clickListener, holder.adapterPosition)
 
     }
 
@@ -36,28 +36,45 @@ class CitiesRecyclerAdapter(
         return cities.size
     }
 
-    fun getCity(position: Int) = cities[position]
+    fun getCity(position: Int): City = cities[position]
+
+    fun removeItem(position: Int, action: OnItemClickedListener, city: City) {
+        cities.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, cities.size)
+        //alert callback
+        action.onDeleteItem(city)
+    }
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val city_name: TextView = itemView.findViewById(R.id.name)
+        val delete: ImageView = itemView.findViewById(R.id.imageView)
 
         //init item click listener
-        fun initialize(city: City, action: onItemClickedListener) {
+        fun initialize(city: City, action: OnItemClickedListener, position: Int) {
             //initialize items
             //set city name
             city_name.text = city.name
+
+            val position = position
 
             //implement click function
             itemView.setOnClickListener {
                 action.onItemCLicked(city)
             }
+
+            //delete action
+            delete.setOnClickListener {
+                removeItem(position, action, city)
+            }
         }
 
     }
 
-    interface onItemClickedListener {
+    interface OnItemClickedListener {
         fun onItemCLicked(city: City)
+        fun onDeleteItem(city: City)
     }
 }

@@ -82,7 +82,9 @@ class AddCityFragment : Fragment() {
 //            }
 
             //create dummy entry in database to emulate
-            viewModel.addCity(City(0,"sweden"))
+            viewModel.addCity(City(0,"buea"))
+            viewModel.addCity(City(0,"douala"))
+            viewModel.addCity(City(0,"boston"))
             //navigate to cities list fragment
             navController.navigate(R.id.action_addCityFragment_to_citiesFragment)
         }
