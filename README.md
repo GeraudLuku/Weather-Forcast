@@ -1,19 +1,26 @@
-# Pink [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+# Ohayō [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-<img src="/logo.png" height="200px"/> <br>
+<img src="/sun.png" height="200px"/> <br>
 
-Pink is a minimalistic weather forecast application developed using Kotlin language
+Ohayō is a minimalistic weather forecast application developed using Kotlin language
 
 
 # Screenshoots
-<img src="/screenshoots/Screen-1.png" height="400px"/> <img src="/screenshoots/Screen-2.png" height="400px"/>
-<img src="/screenshoots/Screen-3.png" height="400px"/>
+<img src="/screenshoots/Screenshot_2020-04-19-20-10-06.png" height="400px"/> <img src="/screenshoots/Screenshot_2020-04-19-20-10-26.png" height="400px"/>
+<img src="/screenshoots/Screenshot_2020-04-19-20-10-31.png" height="400px"/>
+<img src="/screenshoots/Screenshot_2020-04-19-20-10-50.png" height="400px"/>
 
 # Technologies Used
-	-Jetpack navigation
+  -Jetpack navigation
+  -MVVM Architecture
+  -Coroutines
+  -Retrofit
+  -Room Persistence Library
+  -Open Weather API
+  -Google Places and Location API
 
 ## Contributing
-Looking to contribute something to Pink?
+Looking to contribute something?
 Start by forking the project then make a change in the code and watch your pull request be accepted and merged
 
 ### Todos
