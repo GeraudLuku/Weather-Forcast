@@ -33,10 +33,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/name"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintTop_toTopOf="@+id/name"
-        app:srcCompat="@drawable/ic_cancel" />
+        android:src="@drawable/ic_delete_" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

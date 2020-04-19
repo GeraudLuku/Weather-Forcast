@@ -57,6 +57,7 @@ class CitiesRecyclerAdapter(
             //initialize items
             //set city name
             city_name.text = city.name
+            city_name.text = city.name.substring(0,1).toUpperCase() + city.name.substring(1).toLowerCase() //make first letter capital
 
             val position = position
 

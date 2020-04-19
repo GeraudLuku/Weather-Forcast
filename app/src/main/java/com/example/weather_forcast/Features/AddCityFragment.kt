@@ -102,7 +102,7 @@ class AddCityFragment : Fragment() {
             Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN,
                 fields
-            ).setCountry("US")
+            ).setCountry(Locale.getDefault().country)
                 .build(it)
         }
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)

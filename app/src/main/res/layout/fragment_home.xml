@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-28dp"
             android:gravity="center_horizontal"
-            android:text="24"
+            tools:text="24"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/white"
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLength="20"
-            android:text="Douala"
+            tools:text="Douala"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="32sp" />
@@ -100,7 +100,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:padding="10dp"
-            android:text="Sunny"
+            tools:text="Sunny"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp" />
@@ -109,7 +109,7 @@
             android:id="@+id/weather_condition_icon"
             android:layout_width="156dp"
             android:layout_height="156dp"
-            android:src="@drawable/ic_wb_sunny" />
+            tools:src="@drawable/weather_icon_placeholder" />
     </LinearLayout>
 
     <TextView

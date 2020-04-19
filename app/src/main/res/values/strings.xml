@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Weather-Forcast</string>
-
+    <string name="app_name">Ohayō</string>
     <string name="api_key">AIzaSyA2ypCoAoIG_pqEFPzorAobHbuw3C0_iPk</string>
 </resources>

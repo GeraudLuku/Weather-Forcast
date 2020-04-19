@@ -32,6 +32,7 @@ import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.WeatherViewModel
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.util.*
 
 
 class HomeFragment : Fragment() {
@@ -46,6 +47,8 @@ class HomeFragment : Fragment() {
     private lateinit var fadeInAnim: Animation
     private lateinit var fadeOutAnim: Animation
 
+    private var firstStart: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,6 +56,17 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onStart() {
+        //check permissions
+        checkPermissions()
+        isLocationEnabled()
+
+        //change first start to true so that it loads current location weather
+        firstStart = true
+
+        super.onStart()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,11 +91,13 @@ class HomeFragment : Fragment() {
             if (currentWeather != null) {
                 //update UI
                 location.text = currentWeather.name
-                weather_condition.text = currentWeather.weather[0].description
+                weather_condition.text =
+                    currentWeather.weather[0].description.toUpperCase(Locale.getDefault())
                 temperature.text = currentWeather.main.temp.toInt()
                     .toString() //cast i to interger to remove the decimal point
                 Glide.with(view)
                     .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
+                    .placeholder(R.drawable.weather_icon_placeholder)
                     .into(weather_condition_icon)
 
                 //notify loading is over
@@ -90,7 +106,9 @@ class HomeFragment : Fragment() {
         })
 
         //observe current location forecast weather
-        viewModel.currentUserForecastWeather.observe(viewLifecycleOwner, Observer { forecastWeather ->
+        viewModel.currentUserForecastWeather.observe(
+            viewLifecycleOwner,
+            Observer { forecastWeather ->
                 Log.d("Success- Forecast", forecastWeather.toString())
 
                 if (forecastWeather != null) {
@@ -116,11 +134,13 @@ class HomeFragment : Fragment() {
 
                 //update UI
                 location.text = currentWeather.name
-                weather_condition.text = currentWeather.weather[0].description
+                weather_condition.text =
+                    currentWeather.weather[0].description.toUpperCase(Locale.getDefault())
                 temperature.text = currentWeather.main.temp.toInt()
-                    .toString() //cast i to interger to remove the decimal point
+                    .toString() //cast i to integer to remove the decimal point
                 Glide.with(view)
                     .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
+                    .placeholder(R.drawable.weather_icon_placeholder)
                     .into(weather_condition_icon)
 
                 //notify loading is over
@@ -175,8 +195,10 @@ class HomeFragment : Fragment() {
             }
         })
 
-        //set the town to get location
-//        viewModel.setLocation("london")
+        //sif it first start of app load current device weather
+        if (firstStart) {
+            getLastLocation()
+        }
 
         //initialize view
         list_btn.setOnClickListener {

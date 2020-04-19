@@ -1,6 +1,8 @@
 package com.example.weather_forcast.Adapter
 
+import android.R.string
 import android.content.Context
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weather_forcast.Model.ForecastWeath.Forecast
 import com.example.weather_forcast.R
-import com.github.thunder413.datetimeutils.DateTimeUtils
-import android.text.format.DateFormat;
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 //capitalize each string to uppercase https://stackoverflow.com/questions/35177726/how-to-change-first-letter-of-each-word-to-uppercase-in-textview-xml
 
@@ -41,21 +44,27 @@ class ForecastRecyclerAdapter(
             .into(holder.icon)
         //set temperature
         holder.temp.text = forecast.main.temp.toInt()
-            .toString()  //convert to interger frst so as to remove the decimal point
+            .toString()  //convert to integer first so as to remove the decimal point
+
+        //convert string to date
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        val date = format.parse(forecast.dtTxt)
 
         //"2020-01-07 15:00:00"
-        val date = DateTimeUtils.formatDate(forecast.dtTxt)
+//        val date = DateTimeUtils.formatDate(forecast.dtTxt)
 
         //set time
-        holder.time.text = DateFormat.format("HH:mm a", date)
+        val formatTime = SimpleDateFormat("HH:mm a", Locale.ENGLISH)
+        holder.time.text = formatTime.format(date)
 
         //set day
-        holder.day.text = DateFormat.format("EEEE", date)
+        val formatDate = SimpleDateFormat("EEEE", Locale.ENGLISH)
+        holder.day.text = formatDate.format(date)
 
     }
 
     override fun getItemCount(): Int {
-       return forecastList.size
+        return forecastList.size
     }
 
     class ForecastRecyclerAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
