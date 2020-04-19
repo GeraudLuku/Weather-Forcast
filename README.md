@@ -11,13 +11,13 @@ Ohayō is a minimalistic weather forecast application developed using Kotlin lan
 <img src="/screenshoots/Screenshot_2020-04-19-20-10-50.png" height="400px"/>
 
 # Technologies Used
-  -Jetpack navigation
-  -MVVM Architecture
-  -Coroutines
-  -Retrofit
-  -Room Persistence Library
-  -Open Weather API
-  -Google Places and Location API
+  - Jetpack navigation
+  - MVVM Architecture
+  - Coroutines
+  - Retrofit
+  - Room Persistence Library
+  - Open Weather API
+  - Google Places and Location API
 
 ## Contributing
 Looking to contribute something?
