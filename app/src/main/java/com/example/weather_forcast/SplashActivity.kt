@@ -12,5 +12,6 @@ class SplashActivity : AppCompatActivity() {
         //navigate to main activity
         val intent = Intent(this,MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

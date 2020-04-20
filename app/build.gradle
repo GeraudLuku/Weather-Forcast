@@ -80,6 +80,9 @@ dependencies {
     //multidex
     implementation 'com.android.support:multidex:1.0.3'
 
+    //floating action button
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
+
 //    // Kodein
 //    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
 //    implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
