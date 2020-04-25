@@ -1,5 +1,6 @@
 package com.example.weather_forcast.Api
 
+import android.accounts.NetworkErrorException
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.weather_forcast.Model.CurrentWeath.CurrentWeather
@@ -24,13 +25,17 @@ object RetrofitRepository {
                 super.onActive()
                 job1?.let { theJob ->
                     CoroutineScope(IO + theJob).launch {//get current weather on the background thread
-                        val currentWeather: CurrentWeather =
-                            RetrofitBuilder.apiService.getCurrentWeather(location)
-                        withContext(Main) {
-                            //set value on the main thread
-                            value = currentWeather
-                            Log.d("Method -current weather", currentWeather.toString())
-                            theJob.complete()
+                        try {
+                            val currentWeather: CurrentWeather =
+                                RetrofitBuilder.apiService.getCurrentWeather(location)
+                            withContext(Main) {
+                                //set value on the main thread
+                                value = currentWeather
+                                Log.d("Method -current weather", currentWeather.toString())
+                                theJob.complete()
+                            }
+                        } catch (e: Throwable) {
+                            Log.d("Network-Error", "Network Error")
                         }
                     }
                 }
@@ -49,14 +54,19 @@ object RetrofitRepository {
                 super.onActive()
                 job1?.let { theJob ->
                     CoroutineScope(IO + theJob).launch {//get current weather on the background thread
-                        val currentWeather: CurrentWeather =
-                            RetrofitBuilder.apiService.getCurrentWeather(latitude, longitude)
-                        withContext(Main) {
-                            //set value on the main thread
-                            value = currentWeather
-                            Log.d("Method-current weather2", currentWeather.toString())
-                            theJob.complete()
+                        try {
+                            val currentWeather: CurrentWeather =
+                                RetrofitBuilder.apiService.getCurrentWeather(latitude, longitude)
+                            withContext(Main) {
+                                //set value on the main thread
+                                value = currentWeather
+                                Log.d("Method-current weather2", currentWeather.toString())
+                                theJob.complete()
+                            }
+                        } catch (e: Throwable) {
+
                         }
+
                     }
                 }
             }
@@ -74,14 +84,19 @@ object RetrofitRepository {
                 super.onActive()
                 job1?.let { theJob ->
                     CoroutineScope(IO + theJob).launch {//get forecast weather on the background thread
-                        val forecastWeather: ForecastWeather =
-                            RetrofitBuilder.apiService.getWeatherForecast(location)
-                        withContext(Main) {
-                            //set value on the main thread
-                            value = forecastWeather
-                            Log.d("Method-Forecast Weather", forecastWeather.toString())
-                            theJob.complete()
+                        try {
+                            val forecastWeather: ForecastWeather =
+                                RetrofitBuilder.apiService.getWeatherForecast(location)
+                            withContext(Main) {
+                                //set value on the main thread
+                                value = forecastWeather
+                                Log.d("Method-Forecast Weather", forecastWeather.toString())
+                                theJob.complete()
+                            }
+                        } catch (e: Throwable) {
+                            Log.d("Network-Error", "Network Error")
                         }
+
                     }
                 }
             }
@@ -99,13 +114,17 @@ object RetrofitRepository {
                 super.onActive()
                 job1?.let { theJob ->
                     CoroutineScope(IO + theJob).launch {//get forecast weather on the background thread
-                        val forecastWeather: ForecastWeather =
-                            RetrofitBuilder.apiService.getWeatherForecast(latitude, longitude)
-                        withContext(Main) {
-                            //set value on the main thread
-                            value = forecastWeather
-                            Log.d("Method-ForecastWeather2", forecastWeather.toString())
-                            theJob.complete()
+                        try {
+                            val forecastWeather: ForecastWeather =
+                                RetrofitBuilder.apiService.getWeatherForecast(latitude, longitude)
+                            withContext(Main) {
+                                //set value on the main thread
+                                value = forecastWeather
+                                Log.d("Method-ForecastWeather2", forecastWeather.toString())
+                                theJob.complete()
+                            }
+                        } catch (e: Throwable) {
+
                         }
                     }
                 }
