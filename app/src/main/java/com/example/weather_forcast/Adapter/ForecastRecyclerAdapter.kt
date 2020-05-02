@@ -21,6 +21,7 @@ import kotlin.collections.ArrayList
 
 class ForecastRecyclerAdapter(
     private val forecastList: ArrayList<Forecast>,
+    private var clickListener: OnItemClickedListener,
     private val context: Context
 ) :
     RecyclerView.Adapter<ForecastRecyclerAdapter.ForecastRecyclerAdapterViewHolder>() {
@@ -38,30 +39,8 @@ class ForecastRecyclerAdapter(
 
     override fun onBindViewHolder(holder: ForecastRecyclerAdapterViewHolder, position: Int) {
         val forecast = forecastList[position]
-
-        //set icon
-        Glide.with(context)
-            .load("http://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png")
-            .into(holder.icon)
-        //set temperature
-        holder.temp.text = forecast.main.temp.toInt()
-            .toString()  //convert to integer first so as to remove the decimal point
-
-        //convert string to date
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-        val date = format.parse(forecast.dtTxt)
-
-        //"2020-01-07 15:00:00"
-//        val date = DateTimeUtils.formatDate(forecast.dtTxt)
-
-        //set time
-        val formatTime = SimpleDateFormat("HH:mm a", Locale.ENGLISH)
-        holder.time.text = formatTime.format(date)
-
-        //set day
-        val formatDate = SimpleDateFormat("EEEE", Locale.ENGLISH)
-        holder.day.text = formatDate.format(date)
-
+        //set click listener
+        holder.initialize(forecast, clickListener, context)
     }
 
     override fun getItemCount(): Int {
@@ -73,6 +52,43 @@ class ForecastRecyclerAdapter(
         val temp: TextView = itemView.findViewById(R.id.temperature)
         val time: TextView = itemView.findViewById(R.id.time)
         val day: TextView = itemView.findViewById(R.id.day)
+
+        //init item click listener
+        fun initialize(
+            forecast: Forecast,
+            action: OnItemClickedListener,
+            context: Context
+        ) {
+            //initialize items
+            //set icon
+            Glide.with(context)
+                .load("http://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png")
+                .into(icon)
+            //set temperature
+            temp.text = forecast.main.temp.toInt()
+                .toString()  //convert to integer first so as to remove the decimal point
+
+            //convert string to date
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val date = format.parse(forecast.dtTxt)
+
+            //set time
+            val formatTime = SimpleDateFormat("HH:mm a", Locale.getDefault())
+            time.text = formatTime.format(date)
+
+            //set day
+            val formatDate = SimpleDateFormat("EEEE", Locale.getDefault())
+            day.text = formatDate.format(date)
+
+            //implement click function
+            itemView.setOnClickListener {
+                action.onWeatherItemCLicked(forecast)
+            }
+        }
+    }
+
+    interface OnItemClickedListener {
+        fun onWeatherItemCLicked(forecast: Forecast)
     }
 
 }

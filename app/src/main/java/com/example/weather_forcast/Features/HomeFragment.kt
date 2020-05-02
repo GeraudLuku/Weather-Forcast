@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,17 +23,20 @@ import com.example.weather_forcast.ViewModel.WeatherViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_menu_sheet.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
 
     private lateinit var viewModel: WeatherViewModel
     private lateinit var navController: NavController
 
-    private var forecastWeather: ArrayList<Forecast> = ArrayList()
-    private lateinit var currentWeather: CurrentWeather
+    private var currentWeather: CurrentWeather? = null
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private lateinit var fadeInAnim: Animation
     private lateinit var fadeOutAnim: Animation
@@ -54,7 +58,7 @@ class HomeFragment : Fragment() {
         navController = findNavController()
 
         //init bottom sheet
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_layout)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_layout)
         bottomSheetBehavior.setBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -64,6 +68,14 @@ class HomeFragment : Fragment() {
                         //if its hidden set it back to collapsed
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
                     }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        //set back day to today
+                        textView.text = "Today"
+                        //reload current location data
+                        currentWeather?.let {
+                            LoadDataOnBottomSheet(it)
+                        }
+                    }
                 }
             }
 
@@ -71,13 +83,6 @@ class HomeFragment : Fragment() {
                 // React to dragging events
             }
         })
-
-        //initialize recycler view
-        val recyclerViewAdapter = ForecastRecyclerAdapter(forecastWeather, view.context)
-        recycler_view.adapter = recyclerViewAdapter
-        recycler_view.layoutManager =
-            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        recycler_view.setHasFixedSize(true)
 
         //init animations
         fadeInAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in)
@@ -100,6 +105,9 @@ class HomeFragment : Fragment() {
                     .placeholder(R.drawable.weather_icon_placeholder)
                     .into(weather_condition_icon)
 
+                //load data on bottom sheet
+                LoadDataOnBottomSheet(currentWeather)
+
                 //notify loading is over
                 viewModel._isLoading.postValue(false)
             }
@@ -113,8 +121,12 @@ class HomeFragment : Fragment() {
 
                 if (forecastWeather != null) {
                     //notify data set changed
-                    this.forecastWeather = forecastWeather.list
-                    recyclerViewAdapter.notifyDataSetChanged()
+                    //initialize recycler view
+                    recycler_view.adapter =
+                        ForecastRecyclerAdapter(forecastWeather.list, this, view.context)
+                    recycler_view.layoutManager =
+                        LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+                    recycler_view.setHasFixedSize(true)
 
                     //notify loading is over
                     viewModel._isLoading.postValue(false)
@@ -139,6 +151,9 @@ class HomeFragment : Fragment() {
                     .placeholder(R.drawable.weather_icon_placeholder)
                     .into(weather_condition_icon)
 
+                //load data on bottom sheet
+                LoadDataOnBottomSheet(currentWeather)
+
                 //notify loading is over
                 viewModel._isLoading.postValue(false)
             }
@@ -152,8 +167,12 @@ class HomeFragment : Fragment() {
             if (forecastWeather != null) {
                 //notify data set changed
                 //initialize recycler view
-                this.forecastWeather = forecastWeather.list
-                recyclerViewAdapter.notifyDataSetChanged()
+                //initialize recycler view
+                recycler_view.adapter =
+                    ForecastRecyclerAdapter(forecastWeather.list, this, view.context)
+                recycler_view.layoutManager =
+                    LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+                recycler_view.setHasFixedSize(true)
 
                 //notify loading is over
                 viewModel._isLoading.postValue(false)
@@ -198,6 +217,89 @@ class HomeFragment : Fragment() {
             //navigate to list of cities page
             navController?.navigate(R.id.action_homeFragment_to_citiesFragment)
         }
+
+        weather_container.setOnClickListener {
+            //open bottom sheet and display data
+            currentWeather?.let {
+                LoadDataOnBottomSheet(it)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
     }
 
+
+    //load data on bottom sheet
+    fun LoadDataOnBottomSheet(weather: CurrentWeather) {
+
+        textView.text = "Today"
+
+        textView2.text =
+            String.format(Locale.getDefault(), "Feels Like %s°C", weather.main.feelsLike.toString())
+
+        //sunrise and sunset
+        sunrise.text = formatTime(Date(TimeUnit.SECONDS.toMillis(weather.sys.sunrise.toLong())))
+        sunset.text = formatTime(Date(TimeUnit.SECONDS.toMillis(weather.sys.sunset.toLong())))
+
+        //max and min temperature
+        min_temperature.text = weather.main.tempMin.toInt().toString()
+        max_temp.text = weather.main.tempMax.toInt().toString()
+
+        //visibility and humidity
+        visibility.text =
+            String.format(
+                Locale.getDefault(),
+                "%s Km",
+                (weather.visibility * 0.001).toString()
+            ) //convert meters to kilometers
+        humidity.text =
+            String.format(Locale.getDefault(), "%s %%", weather.main.humidity.toInt().toString())
+
+        //wind speed
+        wind_speed.text =
+            String.format(Locale.getDefault(), "%s Meter/sec", weather.wind.speed.toString())
+    }
+
+    fun formatTime(sun: Date): String {
+        val timeformat = SimpleDateFormat("h:m a", Locale.getDefault())
+        return timeformat.format(sun)
+    }
+
+    override fun onWeatherItemCLicked(forecast: Forecast) {
+        //load data on bottom sheet and open it
+
+        //convert string to date
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val date = format.parse(forecast.dtTxt)
+
+        //set day
+        val formatDate = SimpleDateFormat("E, d MMM yyyy", Locale.getDefault())
+        textView.text = formatDate.format(date)
+
+        textView2.text =
+            String.format(
+                Locale.getDefault(),
+                "Feels Like %s°C",
+                forecast.main.feelsLike.toString()
+            )
+
+        //sunrise and sunset
+        sunrise.text = "N/A"
+        sunset.text = "N/A"
+
+        //max and min temperature
+        min_temperature.text = forecast.main.tempMin.toInt().toString()
+        max_temp.text = forecast.main.tempMax.toInt().toString()
+
+        //visibility and humidity
+        visibility.text = "N/A"
+        humidity.text =
+            String.format(Locale.getDefault(), "%s %%", forecast.main.humidity.toInt().toString())
+
+        //wind speed
+        wind_speed.text =
+            String.format(Locale.getDefault(), "%s Meter/sec", forecast.wind.speed.toString())
+
+        //open bottom sheet
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
 }

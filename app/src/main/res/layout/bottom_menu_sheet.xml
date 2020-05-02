@@ -38,11 +38,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Feels Like 28(Degrees Celsius)"
+        android:layout_marginEnd="8dp"
         android:textColor="@android:color/black"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view" />
+        app:layout_constraintTop_toBottomOf="@id/view"
+        tools:text="Feels Like 28(Degrees Celsius)" />
 
     <LinearLayout
         android:id="@+id/linear_a"
@@ -66,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="12:23 AM"
+            tools:text="12:23 AM"
             android:textAlignment="center"
             android:textAllCaps="true" />
 
@@ -94,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="17:00 PM"
+            tools:text="17:00 PM"
             android:textAlignment="center"
             android:textAllCaps="true" />
 
@@ -130,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-12dp"
-            android:text="24"
+            tools:text="24"
             android:textAlignment="center"
             android:textAllCaps="true" />
 
@@ -166,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-12dp"
-            android:text="60"
+            tools:text="60"
             android:textAlignment="center"
             android:textAllCaps="true" />
 
@@ -185,17 +186,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pressure"
+            android:text="Visibility"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark" />
 
 
         <TextView
-            android:id="@+id/pressure"
+            android:id="@+id/visibility"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="60 PSI"
+            tools:text="60 PSI"
             android:textAlignment="center" />
 
     </LinearLayout>
@@ -223,7 +224,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="60%"
+            tools:text="60%"
             android:textAlignment="center"
             android:textAllCaps="true" />
 
@@ -254,7 +255,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="112 Meters/hr"
+            tools:text="112 Meters/hr"
             android:textAlignment="center" />
 
     </LinearLayout>
