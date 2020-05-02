@@ -45,6 +45,8 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(activity!!).get(WeatherViewModel::class.java)
         navController = findNavController()
 
+        //init bottom sheet
+
 
         //init animations
         fadeInAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in)
@@ -105,7 +107,7 @@ class HomeFragment : Fragment() {
                 temperature.text = currentWeather.main.temp.toInt()
                     .toString() //cast i to integer to remove the decimal point
                 Glide.with(view)
-                    .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
+                    .load("http://openweathermap.org/img/wn/" + currentWeather.weather[0].icon + "@2x.png")
                     .placeholder(R.drawable.weather_icon_placeholder)
                     .into(weather_condition_icon)
 
@@ -140,9 +142,9 @@ class HomeFragment : Fragment() {
                     //if something is loading then hide views and show progress bar
 
                     //hide recycler view when loading
-                    recycler_view.startAnimation(fadeOutAnim)
-                    forecast_progress.startAnimation(fadeInAnim)
-                    forecast_progress.visibility = View.VISIBLE
+//                    recycler_view.startAnimation(fadeOutAnim)
+//                    forecast_progress.startAnimation(fadeInAnim)
+//                    forecast_progress.visibility = View.VISIBLE
 
                     //hide current weather when loading
                     weather_container.startAnimation(fadeOutAnim)
@@ -153,9 +155,9 @@ class HomeFragment : Fragment() {
                     //if it has finished loading hide progress bars and show views
 
                     //show recycler view after everything has finished loading
-                    recycler_view.startAnimation(fadeInAnim)
-                    forecast_progress.startAnimation(fadeOutAnim)
-                    forecast_progress.visibility = View.INVISIBLE
+//                    recycler_view.startAnimation(fadeInAnim)
+//                    forecast_progress.startAnimation(fadeOutAnim)
+//                    forecast_progress.visibility = View.INVISIBLE
 
                     //show current weather view after everything has finished loading
                     weather_container.startAnimation(fadeInAnim)
