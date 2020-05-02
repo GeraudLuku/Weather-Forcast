@@ -15,16 +15,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.weather_forcast.Adapter.ForecastRecyclerAdapter
+import com.example.weather_forcast.Model.CurrentWeath.CurrentWeather
+import com.example.weather_forcast.Model.ForecastWeath.Forecast
 import com.example.weather_forcast.R
 import com.example.weather_forcast.ViewModel.WeatherViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.bottom_menu_sheet.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var viewModel: WeatherViewModel
     private lateinit var navController: NavController
+
+    private var forecastWeather: ArrayList<Forecast> = ArrayList()
+    private lateinit var currentWeather: CurrentWeather
 
     private lateinit var fadeInAnim: Animation
     private lateinit var fadeOutAnim: Animation
@@ -46,7 +54,30 @@ class HomeFragment : Fragment() {
         navController = findNavController()
 
         //init bottom sheet
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_layout)
+        bottomSheetBehavior.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // React to state change
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        //if its hidden set it back to collapsed
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+                    }
+                }
+            }
 
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // React to dragging events
+            }
+        })
+
+        //initialize recycler view
+        val recyclerViewAdapter = ForecastRecyclerAdapter(forecastWeather, view.context)
+        recycler_view.adapter = recyclerViewAdapter
+        recycler_view.layoutManager =
+            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        recycler_view.setHasFixedSize(true)
 
         //init animations
         fadeInAnim = AnimationUtils.loadAnimation(context, R.anim.fade_in)
@@ -57,6 +88,7 @@ class HomeFragment : Fragment() {
             Log.d("Successful", currentWeather.toString())
 
             if (currentWeather != null) {
+                this.currentWeather = currentWeather
                 //update UI
                 location.text = currentWeather.name
                 weather_condition.text =
@@ -81,12 +113,8 @@ class HomeFragment : Fragment() {
 
                 if (forecastWeather != null) {
                     //notify data set changed
-                    //initialize recycler view
-                    recycler_view.adapter =
-                        ForecastRecyclerAdapter(forecastWeather.list, view.context)
-                    recycler_view.layoutManager =
-                        LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-                    recycler_view.setHasFixedSize(true)
+                    this.forecastWeather = forecastWeather.list
+                    recyclerViewAdapter.notifyDataSetChanged()
 
                     //notify loading is over
                     viewModel._isLoading.postValue(false)
@@ -99,7 +127,7 @@ class HomeFragment : Fragment() {
             Log.d("Successful", currentWeather.toString())
 
             if (currentWeather != null) {
-
+                this.currentWeather = currentWeather
                 //update UI
                 location.text = currentWeather.name
                 weather_condition.text =
@@ -124,10 +152,8 @@ class HomeFragment : Fragment() {
             if (forecastWeather != null) {
                 //notify data set changed
                 //initialize recycler view
-                recycler_view.adapter = ForecastRecyclerAdapter(forecastWeather.list, view.context)
-                recycler_view.layoutManager =
-                    LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-                recycler_view.setHasFixedSize(true)
+                this.forecastWeather = forecastWeather.list
+                recyclerViewAdapter.notifyDataSetChanged()
 
                 //notify loading is over
                 viewModel._isLoading.postValue(false)

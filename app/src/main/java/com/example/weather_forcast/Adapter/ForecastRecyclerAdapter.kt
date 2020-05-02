@@ -14,12 +14,13 @@ import com.example.weather_forcast.Model.ForecastWeath.Forecast
 import com.example.weather_forcast.R
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 //capitalize each string to uppercase https://stackoverflow.com/questions/35177726/how-to-change-first-letter-of-each-word-to-uppercase-in-textview-xml
 
 class ForecastRecyclerAdapter(
-    private val forecastList: List<Forecast>,
+    private val forecastList: ArrayList<Forecast>,
     private val context: Context
 ) :
     RecyclerView.Adapter<ForecastRecyclerAdapter.ForecastRecyclerAdapterViewHolder>() {
