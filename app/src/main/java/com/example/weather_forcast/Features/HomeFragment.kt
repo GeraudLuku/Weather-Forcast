@@ -73,7 +73,7 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
                         textView.text = "Today"
                         //reload current location data
                         currentWeather?.let {
-                            LoadDataOnBottomSheet(it)
+                            loadDataOnBottomSheet(it)
                         }
                     }
                 }
@@ -93,20 +93,12 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
             Log.d("Successful", currentWeather.toString())
 
             if (currentWeather != null) {
-                this.currentWeather = currentWeather
+
                 //update UI
-                location.text = currentWeather.name
-                weather_condition.text =
-                    currentWeather.weather[0].description.toUpperCase(Locale.getDefault())
-                temperature.text = currentWeather.main.temp.toInt()
-                    .toString() //cast i to interger to remove the decimal point
-                Glide.with(view)
-                    .load("http://openweathermap.org/img/w/" + currentWeather.weather[0].icon + ".png")
-                    .placeholder(R.drawable.weather_icon_placeholder)
-                    .into(weather_condition_icon)
+                loadCurrentWeatherData(currentWeather, view)
 
                 //load data on bottom sheet
-                LoadDataOnBottomSheet(currentWeather)
+                loadDataOnBottomSheet(currentWeather)
 
                 //notify loading is over
                 viewModel._isLoading.postValue(false)
@@ -139,20 +131,12 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
             Log.d("Successful", currentWeather.toString())
 
             if (currentWeather != null) {
-                this.currentWeather = currentWeather
+
                 //update UI
-                location.text = currentWeather.name
-                weather_condition.text =
-                    currentWeather.weather[0].description.toUpperCase(Locale.getDefault())
-                temperature.text = currentWeather.main.temp.toInt()
-                    .toString() //cast i to integer to remove the decimal point
-                Glide.with(view)
-                    .load("http://openweathermap.org/img/wn/" + currentWeather.weather[0].icon + "@2x.png")
-                    .placeholder(R.drawable.weather_icon_placeholder)
-                    .into(weather_condition_icon)
+                loadCurrentWeatherData(currentWeather, view)
 
                 //load data on bottom sheet
-                LoadDataOnBottomSheet(currentWeather)
+                loadDataOnBottomSheet(currentWeather)
 
                 //notify loading is over
                 viewModel._isLoading.postValue(false)
@@ -165,8 +149,6 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
             Log.d("Success- Forecast", forecastWeather.toString())
 
             if (forecastWeather != null) {
-                //notify data set changed
-                //initialize recycler view
                 //initialize recycler view
                 recycler_view.adapter =
                     ForecastRecyclerAdapter(forecastWeather.list, this, view.context)
@@ -212,16 +194,16 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
             }
         })
 
-        //initialize view
+        //initialize views
         list_btn.setOnClickListener {
             //navigate to list of cities page
-            navController?.navigate(R.id.action_homeFragment_to_citiesFragment)
+            navController.navigate(R.id.action_homeFragment_to_citiesFragment)
         }
 
         weather_container.setOnClickListener {
             //open bottom sheet and display data
             currentWeather?.let {
-                LoadDataOnBottomSheet(it)
+                loadDataOnBottomSheet(it)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
@@ -229,7 +211,7 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
 
 
     //load data on bottom sheet
-    fun LoadDataOnBottomSheet(weather: CurrentWeather) {
+    fun loadDataOnBottomSheet(weather: CurrentWeather) {
 
         textView.text = "Today"
 
@@ -252,14 +234,29 @@ class HomeFragment : Fragment(), ForecastRecyclerAdapter.OnItemClickedListener {
                 (weather.visibility * 0.001).toString()
             ) //convert meters to kilometers
         humidity.text =
-            String.format(Locale.getDefault(), "%s %%", weather.main.humidity.toInt().toString())
+            String.format(Locale.getDefault(), "%s %%", weather.main.humidity.toString())
 
         //wind speed
         wind_speed.text =
             String.format(Locale.getDefault(), "%s Meter/sec", weather.wind.speed.toString())
     }
 
-    fun formatTime(sun: Date): String {
+    fun loadCurrentWeatherData(currentWeather: CurrentWeather, view: View) {
+
+        this.currentWeather = currentWeather
+        //update UI
+        location.text = currentWeather.name
+        weather_condition.text =
+            currentWeather.weather[0].description.toUpperCase(Locale.getDefault())
+        temperature.text = currentWeather.main.temp.toInt()
+            .toString() //cast i to integer to remove the decimal point
+        Glide.with(view)
+            .load("http://openweathermap.org/img/wn/" + currentWeather.weather[0].icon + "@2x.png")
+            .placeholder(R.drawable.weather_icon_placeholder)
+            .into(weather_condition_icon)
+    }
+
+    private fun formatTime(sun: Date): String {
         val timeformat = SimpleDateFormat("h:m a", Locale.getDefault())
         return timeformat.format(sun)
     }

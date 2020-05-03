@@ -34,14 +34,8 @@ class MainActivity : AppCompatActivity() {
         if (!Places.isInitialized())
             Places.initialize(applicationContext, getString(R.string.api_key))
 
-        //create a new place client instance
-        var placesClient = Places.createClient(this)
-
         //subscribe to Weather View Model
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
-
-        //query current location
-        //getLastLocation()
 
         //dummy query
 //        viewModel.setLocation(UserLocation(4.155069, 9.246097))
@@ -53,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             if (isLocationEnabled()) {
                 //get location if permission is allowed and location is enabled
                 fusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                    var location: Location? = task.result
+                    val location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
@@ -85,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         locationRequest.numUpdates = 1
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient!!.requestLocationUpdates(
+        fusedLocationClient.requestLocationUpdates(
             locationRequest, locationCallback,
             Looper.myLooper()
         )
@@ -104,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager =
+        val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER

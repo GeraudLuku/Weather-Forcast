@@ -118,9 +118,20 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.getItemId() == android.R.id.home) {
-            navController.popBackStack()
+
+        when(item.itemId){
+            android.R.id.home -> {
+                navController.popBackStack()
+            }
+            R.id.action_settings -> {
+                //goto settings screen
+            }
         }
 
         return super.onOptionsItemSelected(item);
