@@ -15,8 +15,10 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -101,6 +103,12 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
 
                 //show list of cities view after everything has finished loading
                 recycler_view.startAnimation(fadeInAnim)
+
+                //hide progressbar when cities are been loaded
+                progressBar.startAnimation(fadeOutAnim)
+                progressBar.visibility = View.INVISIBLE
+            } else {
+                //hide progressbar if there are no cities
                 progressBar.startAnimation(fadeOutAnim)
                 progressBar.visibility = View.INVISIBLE
             }
@@ -114,7 +122,21 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
 
         //get current location weather
         current_location.setOnClickListener {
-            getLastLocation()
+            //check if location permission is granted
+            if (ContextCompat.checkSelfPermission(
+                    activity!!.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    activity!!,
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ),
+                    PERMISSION_ID
+                )
+            } else {
+                getCurrentLocation()
+            }
         }
     }
 
@@ -125,7 +147,7 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> {
                 navController.popBackStack()
             }
@@ -134,7 +156,7 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
             }
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onItemCLicked(city: City) {
@@ -150,114 +172,48 @@ class CitiesFragment : Fragment(), CitiesRecyclerAdapter.OnItemClickedListener {
         Log.d("Cities-Frag", "item deleted")
     }
 
+    private fun getCurrentLocation() {
 
-    @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
-        if (checkPermissions()) {
-            if (isLocationEnabled()) {
-                //get location if permission is allowed and location is enabled
-                fusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                    var location: Location? = task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
-                        //get latitude and longitude
-                        val userLocation = UserLocation(location.latitude, location.longitude)
-                        Log.d("Known Location", userLocation.toString())
-
-                        //make network request
-                        viewModelWeather.setLocation(userLocation)
-
-                        //move to home fragment
-                        navController.navigate(R.id.action_citiesFragment_to_homeFragment)
-                    }
-                }
-            } else {
-                //prompt user to turn on location of device
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-                requestNewLocationData()
-            }
-        } else {
-            requestPermissions()
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun requestNewLocationData() {
         val locationRequest = LocationRequest()
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 3000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 0
-        locationRequest.fastestInterval = 0
-        locationRequest.numUpdates = 1
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Activity)
-        fusedLocationClient!!.requestLocationUpdates(
-            locationRequest, locationCallback,
-            Looper.myLooper()
-        )
+        LocationServices.getFusedLocationProviderClient(activity!!)
+            .requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult?) {
+                        super.onLocationResult(locationResult)
+                        LocationServices.getFusedLocationProviderClient(activity!!)
+                            .removeLocationUpdates(this)
+                        if (locationResult != null && locationResult.locations.size > 0) {
+
+                            val latestLocationIndex = locationResult.locations.size - 1
+                            val latitude = locationResult.locations[latestLocationIndex].latitude
+                            val longitude = locationResult.locations[latestLocationIndex].longitude
+
+                            //query weather information for location
+                            viewModelWeather.setLocation(UserLocation(latitude, longitude))
+
+                        }
+                    }
+                },
+                Looper.getMainLooper()
+            )
+
     }
-
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val lastLocation: Location = locationResult.lastLocation
-            // get location here
-            val userLocation = UserLocation(lastLocation.latitude, lastLocation.longitude)
-            Log.d("Known Location", userLocation.toString())
-
-            //make network request
-            viewModelWeather.setLocation(userLocation)
-
-            //move to home fragment
-            navController.navigate(R.id.action_citiesFragment_to_homeFragment)
-
-        }
-    }
-
-    private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager =
-            context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
-    }
-
-    private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                context as Activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-
-        return false
-    }
-
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            context as Activity,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            PERMISSION_ID
-        )
-    }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        if (requestCode == PERMISSION_ID) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                getLastLocation()
+        if (requestCode == PERMISSION_ID && grantResults.isNotEmpty()) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation()
+            } else {
+                Toast.makeText(context, "Location Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
     }
