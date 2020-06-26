@@ -10,9 +10,9 @@ Ohayō is a minimalistic weather forecast application developed using Kotlin lan
 <img src="/screenshoots/Screenshot_2020-04-19-20-10-31.png" height="400px"/>
 <img src="/screenshoots/Screenshot_2020-04-19-20-10-50.png" height="400px"/>
 
-<img src="/screenshoots/Ohayō_Screenshot_2020.06.26_12.45.44.png" height="400px"/>
-<img src="/screenshoots/Ohayō_Screenshot_2020.06.26_12.45.56.png" height="400px"/>
-<img src="/screenshoots/Ohayō_Screenshot_2020.06.26_12.46.10.png" height="400px"/>
+<img src="/screenshoots/Ohayō_Screenshot_2020.06.26_12.45.44.jpg" height="400px"/>
+<img src="/screenshoots/Ohayō_Screenshot_2020.06.26_12.45.56.jpg" height="400px"/>
+<img src="/screenshoots/Ohayō_Screenshot_2020.06.26_12.46.10.jpg" height="400px"/>
 
 # Technologies Used
   - Jetpack navigation
